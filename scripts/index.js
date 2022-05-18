@@ -76,6 +76,13 @@ class items
         window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
+    createItemCart()
+    {
+        let buyPhase = document.querySelector('.buy-phase');
+
+
+    }
+
     createItem()
     {
         let buyPhase = document.querySelector(".buy-phase");
@@ -211,9 +218,18 @@ window.onload = function() {
         itemsArray[i].amount = oldCartParsed[objIndex]?.amount;
     }
 
-    item1.createItem();
-    item2.createItem();
-    item3.createItem();
+    let fileName = location.href.split("/").slice(-1);
+    if (String(fileName) === "cart.html")
+    {
+        for (let i = 0; i < oldCartParsed.length; i++)
+        {
+            oldCartParsed[i].createItemCart();
+        }
+    } else {
+        item1.createItem();
+        item2.createItem();
+        item3.createItem();
+    }
 }
 
 
