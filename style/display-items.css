@@ -12,6 +12,8 @@
 
 .item-image > img {
     width: 35vh;
+    height: 22vh;
+    object-fit: cover;
 }
 
 .item {
