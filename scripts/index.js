@@ -318,7 +318,7 @@ function getTotalPrice()
     {
         let item = oldCartParsed[i];
         numPrice += item.price * item.amount;
-        numDiscount += item.reduction * item.amount;
+        numDiscount += (item.price*item.reduction/100) * item.amount;
         numTotalPrice += item.price * item.amount - item.reduction * item.amount;
     }
     summaryNumberPrice.innerHTML = String(numPrice)+ " €";
