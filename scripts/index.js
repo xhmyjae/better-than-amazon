@@ -58,6 +58,12 @@ class items
         let itemImage = document.createElement("img");
         itemImage.src = this.image1;
         itemImage.alt = this.name;
+        itemImage.addEventListener('mouseover', () => {
+            itemImage.src = this.image2;
+        });
+        itemImage.addEventListener('mouseout', () => {
+            itemImage.src = this.image1;
+        });
         itemImageDiv.appendChild(itemImage);
 
         let itemInfoDiv = document.createElement("div");
