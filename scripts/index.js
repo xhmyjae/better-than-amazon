@@ -10,6 +10,39 @@ class items
         this.amount = amount;
     }
 
+    addMore()
+    {
+        console.log(this.addless);
+        this.amount++;
+        this.updateAmount();
+    }
+
+    addLess()
+    {
+        if (this.amount >= 1) {
+            this.amount--;
+            this.updateAmount();
+        }
+        if (this.amount === 0) {
+            // supprimer article du panier
+            this.addmorenumber.classList.add('hide');
+        }
+    }
+
+    updateAmount()
+    {
+        this.moreNumber.innerHTML = this.amount;
+    }
+
+    switchImage()
+    {
+        let image = document.querySelector(".item-image");
+
+        image.addEventListener('hover', () => {
+            image.src = this.image2;
+        });
+    }
+
     createItem()
     {
         let buyPhase = document.querySelector(".buy-phase");
@@ -61,23 +94,50 @@ class items
         let addToCartButton = document.createElement("button");
         addToCartButton.className = "add-to-cart-button";
         addToCartButton.innerHTML = "Add to cart";
+        addToCartButton.addEventListener('click', () => {
+            //this.addToCart();
+            this.amount = 1;
+            this.updateAmount();
+            this.addmorenumber.classList.remove('hide');
+        });
         addToCartDiv.appendChild(addToCartButton);
 
         let addMoreNumber = document.createElement("div");
-        addMoreNumber.className = "add-more-number";
+        addMoreNumber.className = "add-more-number hide";
+        this.addmorenumber = addMoreNumber;
         addToCart.appendChild(addMoreNumber);
 
         let addMore = document.createElement("div");
         addMore.className = "add-more";
+        addMore.addEventListener('click', () => {
+            this.addMore();
+            // ajouter un en plus au panier
+        });
         addMoreNumber.appendChild(addMore);
 
         let faSolid = document.createElement("i");
         faSolid.className = "fa-solid fa-plus";
         addMore.appendChild(faSolid);
 
+
+        let addLess = document.createElement("div");
+        addLess.className = "add-less";
+        addLess.addEventListener('click', () => {
+            this.addLess();
+            // enlever un au panier
+            // si = a 0 ca l'enleve du panier dans addLess
+        });
+        this.addless = addLess;
+        addMoreNumber.appendChild(addLess);
+
+        let faSolidMin = document.createElement("i");
+        faSolidMin.className = "fa-solid fa-minus";
+        addLess.appendChild(faSolidMin);
+
         let moreNumber = document.createElement("div");
         moreNumber.className = "more-number";
         moreNumber.innerHTML = this.amount;
+        this.moreNumber = moreNumber;
         addMoreNumber.appendChild(moreNumber);
     }
 }
