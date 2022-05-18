@@ -84,7 +84,7 @@ class items
         {
             let itemReduction = document.createElement("p");
             itemReduction.className = "item-reduction";
-            itemReduction.innerHTML = "- " + this.reduction + "%" + this.price*this.reduction/100 + "€";
+            itemReduction.innerHTML = "- " + this.reduction + "%" + (this.price-this.price*this.reduction/100) + "€";
             itemInfoDiv.appendChild(itemReduction);
             itemPrice.style.textDecoration = "line-through";
         }
