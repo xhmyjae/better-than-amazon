@@ -1,7 +1,8 @@
 class items
 {
-    constructor(image1, image2, name, price, reduction, amount)
+    constructor(id, image1, image2, name, price, reduction, amount)
     {
+        this.id = id;
         this.image1 = image1;
         this.image2 = image2;
         this.name = name;
@@ -12,7 +13,6 @@ class items
 
     addMore()
     {
-        console.log(this.addless);
         this.amount++;
         this.updateAmount();
     }
@@ -24,7 +24,7 @@ class items
             this.updateAmount();
         }
         if (this.amount === 0) {
-            // supprimer article du panier
+            this.deleteFromCart();
             this.addmorenumber.classList.add('hide');
         }
     }
@@ -32,6 +32,13 @@ class items
     updateAmount()
     {
         this.moreNumber.innerHTML = this.amount;
+
+        let oldCart = window.localStorage.getItem('cart');
+        let oldCartParsed = JSON.parse(oldCart);
+        let objIndex = oldCartParsed.findIndex(obj => obj.id === this.id);
+        oldCartParsed[objIndex].amount = this.amount;
+
+        window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
     switchImage()
@@ -41,6 +48,32 @@ class items
         image.addEventListener('hover', () => {
             image.src = this.image2;
         });
+    }
+
+    addToCart()
+    {
+        this.addtocartbutton.innerHTML = 'Added to cart';
+        this.addtocartbutton.disabled = true;
+
+        let oldCart = window.localStorage.getItem('cart');
+        let oldCartParsed = JSON.parse(oldCart);
+        oldCartParsed.push({...this});
+
+        window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
+    }
+
+    deleteFromCart()
+    {
+        this.addmorenumber.classList.add('hide');
+        this.addtocartbutton.innerHTML = 'Add to cart';
+        this.addtocartbutton.disabled = false;
+
+        let oldCart = window.localStorage.getItem('cart');
+        let oldCartParsed = JSON.parse(oldCart);
+        let objIndex = oldCartParsed.findIndex(obj => obj.id === this.id);
+
+        oldCartParsed.splice(objIndex, 1);
+        window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
     createItem()
@@ -99,9 +132,17 @@ class items
 
         let addToCartButton = document.createElement("button");
         addToCartButton.className = "add-to-cart-button";
-        addToCartButton.innerHTML = "Add to cart";
+        this.addtocartbutton = addToCartButton;
+        if (this.amount > 0)
+        {
+            addToCartButton.innerHTML = "Added to cart";
+            addToCartButton.disabled = true;
+
+        } else {
+            addToCartButton.innerHTML = "Add to cart";
+        }
         addToCartButton.addEventListener('click', () => {
-            //this.addToCart();
+            this.addToCart();
             this.amount = 1;
             this.updateAmount();
             this.addmorenumber.classList.remove('hide');
@@ -110,6 +151,10 @@ class items
 
         let addMoreNumber = document.createElement("div");
         addMoreNumber.className = "add-more-number hide";
+        if (this.amount >= 1)
+        {
+            addMoreNumber.classList.remove('hide');
+        }
         this.addmorenumber = addMoreNumber;
         addToCart.appendChild(addMoreNumber);
 
@@ -117,7 +162,6 @@ class items
         addMore.className = "add-more";
         addMore.addEventListener('click', () => {
             this.addMore();
-            // ajouter un en plus au panier
         });
         addMoreNumber.appendChild(addMore);
 
@@ -148,10 +192,29 @@ class items
     }
 }
 
-let item1 = new items("../resources/article_1_front.jpg", "../resources/article_1_back.jpg", "Air Jordan 1 Retro High University Blue", "545", "0", "1");
-let item2 = new items("../resources/article_2_front.jpg", "../resources/article_2_back.jpg", "Air Force 1 Low White Supreme", "250", "0", "1");
-let item3 = new items("../resources/article_3_front.jpg", "../resources/article_3_back.jpg", "Air Force 1 Low Metallic Chrome", "250", "20", "1");
+window.onload = function() {
+    if (localStorage.getItem("cart") === null)
+    {
+        window.localStorage.setItem("cart", JSON.stringify([]));
+    }
+    let item1 = new items(1, "../resources/article_1_front.jpg", "../resources/article_1_back.jpg", "Air Jordan 1 Retro High University Blue", 545, 0, 0);
+    let item2 = new items(2, "../resources/article_2_front.jpg", "../resources/article_2_back.jpg", "Air Force 1 Low White Supreme", 250, 0, 0);
+    let item3 = new items(3, "../resources/article_3_front.jpg", "../resources/article_3_back.jpg", "Air Force 1 Low Metallic Chrome", 250, 20, 0);
 
-item1.createItem();
-item2.createItem();
-item3.createItem();
+    let itemsArray = [item1, item2, item3];
+
+    let oldCart = window.localStorage.getItem('cart');
+    let oldCartParsed = JSON.parse(oldCart);
+    for (let i = 0; i < itemsArray.length; i++)
+    {
+        let objIndex = oldCartParsed.findIndex(obj => obj.id === itemsArray[i].id);
+        itemsArray[i].amount = oldCartParsed[objIndex]?.amount;
+    }
+
+    item1.createItem();
+    item2.createItem();
+    item3.createItem();
+}
+
+
+
