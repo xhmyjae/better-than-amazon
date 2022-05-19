@@ -24,7 +24,13 @@ class items
             this.updateAmount();
         }
         if (this.amount === 0) {
-            this.deleteFromCart();
+            let fileName = location.href.split("/").slice(-1);
+            if (String(fileName) === "cart.html")
+            {
+                this.deleteInCart();
+            } else {
+                this.deleteFromCart();
+            }
             this.addmorenumber.classList.add('hide');
         }
     }
@@ -76,6 +82,24 @@ class items
         window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
+    deleteInCart()
+    {
+        let item = document.querySelector('.item');
+        item.style.display = 'none';
+
+        let oldCart = window.localStorage.getItem('cart');
+        let oldCartParsed = JSON.parse(oldCart);
+        let objIndex = oldCartParsed.findIndex(obj => obj.id === this.id);
+
+        oldCartParsed.splice(objIndex, 1);
+        window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
+        if (oldCartParsed.length === 0) {
+            let buyPhase = document.querySelector(".buy-phase");
+            buyPhase.innerHTML = "Your cart is empty";
+        }
+        getTotalPrice();
+    }
+
     createItemCart()
     {
         let buyPhase = document.querySelector('.buy-phase');
@@ -114,12 +138,15 @@ class items
         itemPrice.innerHTML = this.price + " €";
         if (this.reduction > 0) {
             itemPrice.style.textDecoration = "line-through";
+            itemPrice.style.color = "darkgrey";
         }
         itemPriceInfos.appendChild(itemPrice);
 
         let itemNewPrice = document.createElement("p");
         itemNewPrice.className = "item-new-price";
-        itemNewPrice.innerHTML = (this.price-this.price*this.reduction/100) + " €";
+        if (this.reduction > 0) {
+            itemNewPrice.innerHTML = (this.price-this.price*this.reduction/100) + " €";
+        }
         itemPriceInfos.appendChild(itemNewPrice);
 
         let discount = document.createElement("p");
@@ -147,6 +174,7 @@ class items
         addMore.className = "add-more";
         addMore.addEventListener('click', () => {
             this.addMore();
+            getTotalPrice();
         });
         addMoreNumber.appendChild(addMore);
 
@@ -159,6 +187,7 @@ class items
         addLess.className = "add-less";
         addLess.addEventListener('click', () => {
             this.addLess();
+            getTotalPrice();
         });
         this.addless = addLess;
         addMoreNumber.appendChild(addLess);
@@ -177,10 +206,9 @@ class items
         deleteItem.className = "delete-item";
         deleteItem.innerHTML = "Delete";
         deleteItem.addEventListener('click', () => {
-            this.deleteFromCart();
+            this.deleteInCart();
         });
         itemManagement.appendChild(deleteItem);
-
     }
 
     createItem()
@@ -224,7 +252,7 @@ class items
         {
             let itemReduction = document.createElement("p");
             itemReduction.className = "item-reduction";
-            itemReduction.innerHTML = "- " + this.reduction + "%" + (this.price-this.price*this.reduction/100) + "€";
+            itemReduction.innerHTML = "- " + this.reduction + "% OFF " + (this.price-this.price*this.reduction/100) + "€";
             itemInfoDiv.appendChild(itemReduction);
             itemPrice.style.textDecoration = "line-through";
         }
@@ -332,8 +360,8 @@ window.onload = function() {
     {
         window.localStorage.setItem("cart", JSON.stringify([]));
     }
-    let item1 = new items(1, "../resources/article_1_front.jpg", "../resources/article_1_back.jpg", "Grey rat + 3D version", 545, 0, 0);
-    let item2 = new items(2, "../resources/article_2_front.jpg", "../resources/article_2_back.jpg", "Orange rat + plush version", 250, 0, 0);
+    let item1 = new items(1, "../resources/article_1_front.jpg", "../resources/article_1_back.jpg", "Grey rat + NFT version", 545, 0, 0);
+    let item2 = new items(2, "../resources/article_2_front.jpg", "../resources/article_2_back.jpg", "Orange rat + plushie version", 250, 0, 0);
     let item3 = new items(3, "../resources/article_3_front.jpg", "../resources/article_3_back.jpg", "White rat + fat version", 250, 20, 0);
 
     let itemsArray = [item1, item2, item3];
@@ -347,22 +375,17 @@ window.onload = function() {
     }
 
     let fileName = location.href.split("/").slice(-1);
-    console.log(fileName);
-    console.log(String(fileName));
     if (String(fileName) === "cart.html")
     {
-        console.log("in cart");
         if (oldCartParsed.length === 0) {
-            console.log("empty cart");
             let buyPhase = document.querySelector(".buy-phase");
             buyPhase.innerHTML = "Your cart is empty";
         } else {
-            console.log("not empty cart");
-            console.log(oldCartParsed);
             for (let i = 0; i < oldCartParsed.length; i++)
             {
-                item3.createItemCart();
-                //oldCartParsed[i].createItemCart();
+                //item3.createItemCart();
+                let item = oldCartParsed[i];
+                itemsArray.find(obj => obj.id === item.id).createItemCart();
             }
         }
     } else {
