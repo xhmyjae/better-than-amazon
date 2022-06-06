@@ -11,12 +11,18 @@ class items
         this.amount = amount;
     }
 
+    /**
+     * It adds one to the amount variable and then calls the updateAmount function
+     */
     addMore()
     {
         this.amount++;
         this.updateAmount();
     }
 
+    /**
+     * This function is used to decrease the amount of the product in the cart
+     */
     addLess()
     {
         if (this.amount >= 1) {
@@ -35,6 +41,9 @@ class items
         }
     }
 
+    /**
+     * It updates the amount of the item in the cart, and updates the local storage
+     */
     updateAmount()
     {
         this.moreNumber.innerHTML = this.amount;
@@ -47,6 +56,9 @@ class items
         window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
+    /**
+     * When the user hovers over the image, the image will change to the second image
+     */
     switchImage()
     {
         let image = document.querySelector(".item-image");
@@ -56,6 +68,10 @@ class items
         });
     }
 
+    /**
+     * We change the text of the button to "Added to cart" and disable it so that the user can't click it again. Then we
+     * get the old cart from local storage, parse it, add the current product to it, and then save it back to local storage
+     */
     addToCart()
     {
         this.addtocartbutton.innerHTML = 'Added to cart';
@@ -68,6 +84,10 @@ class items
         window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
+    /**
+     * If the user clicks the "Add to cart" button, the function checks if the item is already in the cart. If it is, it
+     * adds one to the quantity. If it isn't, it adds the item to the cart
+     */
     deleteFromCart()
     {
         this.addmorenumber.classList.add('hide');
@@ -82,6 +102,9 @@ class items
         window.localStorage.setItem('cart', JSON.stringify(oldCartParsed));
     }
 
+    /**
+     * It deletes the item from the cart and updates the total price
+     */
     deleteInCart()
     {
         let item = document.querySelector('.item');
@@ -100,6 +123,9 @@ class items
         getTotalPrice();
     }
 
+    /**
+     * It creates the HTML elements for the item in the cart
+     */
     createItemCart()
     {
         let buyPhase = document.querySelector('.buy-phase');
@@ -211,6 +237,9 @@ class items
         itemManagement.appendChild(deleteItem);
     }
 
+    /**
+     * It creates the HTML element for the item on the main page
+     */
     createItem()
     {
         let buyPhase = document.querySelector(".buy-phase");
@@ -327,6 +356,9 @@ class items
     }
 }
 
+/**
+ * It gets the total price of the cart
+ */
 function getTotalPrice()
 {
     let summaryNumberItems = document.querySelector(".summary-number-items");
@@ -352,9 +384,9 @@ function getTotalPrice()
     summaryNumberPrice.innerHTML = String(numPrice)+ " €";
     summaryNumberDiscount.innerHTML = String(numDiscount)+ " €";
     summaryNumberTotalPrice.innerHTML = String(numTotalPrice)+ " €";
-
 }
 
+/* The above code is creating a new item object for each item in the store. */
 window.onload = function() {
     if (localStorage.getItem("cart") === null)
     {
