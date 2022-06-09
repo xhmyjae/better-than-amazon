@@ -23,8 +23,9 @@ class items
     /**
      * This function is used to decrease the amount of the product in the cart
      */
-    addLess()
+    addLess(clickedItem)
     {
+        console.log(clickedItem);
         if (this.amount >= 1) {
             this.amount--;
             this.updateAmount();
@@ -33,7 +34,7 @@ class items
             let fileName = location.href.split("/").slice(-1);
             if (String(fileName) === "cart.html")
             {
-                this.deleteInCart();
+                this.deleteInCart(clickedItem);
             } else {
                 this.deleteFromCart();
             }
@@ -105,10 +106,9 @@ class items
     /**
      * It deletes the item from the cart and updates the total price
      */
-    deleteInCart()
+    deleteInCart(clickedItem)
     {
-        let item = document.querySelector('.item');
-        item.style.display = 'none';
+        clickedItem.style.display = 'none';
 
         let oldCart = window.localStorage.getItem('cart');
         let oldCartParsed = JSON.parse(oldCart);
@@ -211,8 +211,10 @@ class items
 
         let addLess = document.createElement("div");
         addLess.className = "add-less";
-        addLess.addEventListener('click', () => {
-            this.addLess();
+        addLess.addEventListener('click', e => {
+            let clickedItem = e.target.parentElement.parentElement.parentElement.parentElement;
+            console.log(clickedItem);
+            this.addLess(clickedItem);
             getTotalPrice();
         });
         this.addless = addLess;
@@ -231,8 +233,10 @@ class items
         let deleteItem = document.createElement("div");
         deleteItem.className = "delete-item";
         deleteItem.innerHTML = "Delete";
-        deleteItem.addEventListener('click', () => {
-            this.deleteInCart();
+        deleteItem.addEventListener('click', e => {
+            let clickedItem = e.target.parentElement.parentElement;
+            console.log(clickedItem);
+            this.deleteInCart(clickedItem);
         });
         itemManagement.appendChild(deleteItem);
     }
